@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>999</title>
+    <link rel="shortcut icon" href="jw.jpg">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent scrollbars */
+        }
+
+        video {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1000;
+            transform: translateX(-50%) translateY(-50%);
+        }
+
+        #content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2em;
+        }
+
+        #muteButton {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 1.5em;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .shake {
+            animation: shake 0.8s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-8px);
+            }
+            20%, 40%, 60%, 80% {
+                transform: translateX(8px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <video id="backgroundVideo" autoplay loop muted>
+        <source src="bg.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div id="muteButton">&#128266;</div>
+
+    <script>
+        var video = document.getElementById('backgroundVideo');
+        var muteButton = document.getElementById('muteButton');
+
+        // Set the initial state of the mute button
+        muteButton.innerHTML = video.muted ? '&#128263;' : '&#128266;';
+
+        muteButton.addEventListener('click', function() {
+            if (video.muted) {
+                video.muted = false;
+                muteButton.innerHTML = '&#128266;'; // Speaker icon
+            } else {
+                video.muted = true;
+                muteButton.innerHTML = '&#128263;'; // Muted speaker icon
+            }
+        });
+
+        // Lower the volume to 0.5 (50%)
+        video.volume = 0.06;
+
+        // Function to add the shake class
+        function addShakeClass() {
+            if (video.muted) {
+                muteButton.classList.add('shake');
+                setTimeout(function() {
+                    muteButton.classList.remove('shake');
+                }, 800);
+            }
+        }
+
+        // Call the addShakeClass function every 4 seconds
+        setInterval(addShakeClass, 4000);
+    </script>
+
+</body>
+</html>
