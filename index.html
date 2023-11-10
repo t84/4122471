@@ -9,7 +9,8 @@
         body {
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Prevent scrollbars */
+            overflow: hidden;
+            background-color: #000;
         }
 
         video {
@@ -24,23 +25,6 @@
             transform: translateX(-50%) translateY(-50%);
         }
 
-        #content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            color: #fff;
-            padding: 20px;
-        }
-
-        h1 {
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 1.2em;
-        }
-
         #muteButton {
             position: fixed;
             top: 10px;
@@ -48,6 +32,14 @@
             font-size: 1.5em;
             color: #fff;
             cursor: pointer;
+        }
+
+        #volumeSlider {
+            position: fixed;
+            top: 17px;
+            left: 60px;
+            width: 100px;
+            visibility: visible;
         }
 
         .shake {
@@ -75,28 +67,32 @@
     </video>
 
     <div id="muteButton">&#128266;</div>
+    <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.06">
 
     <script>
         var video = document.getElementById('backgroundVideo');
         var muteButton = document.getElementById('muteButton');
+        var volumeSlider = document.getElementById('volumeSlider');
 
-        // Set the initial state of the mute button
         muteButton.innerHTML = video.muted ? '&#128263;' : '&#128266;';
+        updateSliderVisibility();
 
-        muteButton.addEventListener('click', function() {
-            if (video.muted) {
-                video.muted = false;
-                muteButton.innerHTML = '&#128266;'; // Speaker icon
-            } else {
-                video.muted = true;
-                muteButton.innerHTML = '&#128263;'; // Muted speaker icon
-            }
-        });
-
-        // Lower the volume to 0.5 (50%)
         video.volume = 0.06;
 
-        // Function to add the shake class
+        function updateMuteButtonIcon() {
+            muteButton.innerHTML = video.muted ? '&#128263;' : '&#128266;';
+            updateSliderVisibility();
+        }
+
+        muteButton.addEventListener('click', function() {
+            video.muted = !video.muted;
+            updateMuteButtonIcon();
+        });
+
+        volumeSlider.addEventListener('input', function() {
+            video.volume = volumeSlider.value;
+        });
+
         function addShakeClass() {
             if (video.muted) {
                 muteButton.classList.add('shake');
@@ -106,8 +102,12 @@
             }
         }
 
-        // Call the addShakeClass function every 4 seconds
-        setInterval(addShakeClass, 4000);
+        setInterval(addShakeClass, 5000);
+
+        function updateSliderVisibility() {
+            volumeSlider.style.visibility = video.muted ? 'hidden' : 'visible';
+            volumeSlider.style.left = video.muted ? '10px' : '60px';
+        }
     </script>
 
 </body>
