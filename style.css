@@ -1,0 +1,129 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+video {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1000;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+#muteButton {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    font-size: 1.5em;
+    color: #fff;
+    cursor: pointer;
+}
+
+#volumeSlider {
+    position: fixed;
+    top: 17px;
+    left: 60px;
+    width: 100px;
+    visibility: visible;
+}
+
+.shake {
+    animation: shake 0.8s ease;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-8px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(8px);
+    }
+}
+
+#content {
+    width: 650px;
+    height: 350px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #fff;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+}
+
+#discord {
+    display: flex;
+    align-items: center;
+    margin-left: 50px;
+    margin-top: 50px;
+}
+
+#pfp {
+    border-radius: 50%;
+    width: 100px;
+    margin-left: 20px;
+    margin-top: 40px;
+    border-color: red; /* for the status just set the color for the border */
+    border-style: solid;
+}
+
+#name {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+    font-size: 24px;
+    font-family: 'Inter', sans-serif;
+    margin-top: 15px;
+    color: #fff;
+}
+
+#music {
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+#bar {
+    border-bottom: 1px solid white;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    margin-top: 10px;
+}
+
+#socials {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#socials img {
+    margin: 0 5px;
+}
+
+.links img:hover {
+    transform: scale(1.2) rotate(10deg);
+  }
+  
+.links img:active {
+   transform: scale(0.9);
+   box-shadow: none;
+}
+
+.links img {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
