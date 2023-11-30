@@ -105,13 +105,14 @@
           },
         };
 
+        console.log("Synced with Discord RPC")
+
         socket.send(JSON.stringify(heartbeatData));
         start_heartbeat();
       });
 
       socket.addEventListener("message", (event) => {
         const receivedData = JSON.parse(event.data);
-        console.log("Received data:", receivedData);
 
         if (receivedData.d.discord_user) {
           const userdata = receivedData.d.discord_user;
@@ -124,16 +125,12 @@
             'idle': "#faa61a",
             'dnd': "#ed4245"
           }
-        
-          console.log('Discord Status:', receivedData.d.discord_status);
-          console.log('Color:', colors[receivedData.d.discord_status]);
 
 
           pfp_div.style = `border-color: ${colors[receivedData.d.discord_status]}; border-style: solid;`;
           pfp_div.src = avatar_url;
-          name_div.innerText = `${username}`;
+          name_div.innerText = `@${username}`;
 
-          console.log(username);
         }
         if (receivedData.d.listening_to_spotify) {
           const spotify = receivedData.d.spotify;
