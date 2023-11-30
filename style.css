@@ -64,13 +64,6 @@ video {
     backdrop-filter: blur(5px);
 }
 
-#discord {
-    display: flex;
-    align-items: center;
-    margin-left: 50px;
-    margin-top: 50px;
-}
-
 #pfp {
     border-radius: 50%;
     width: 100px;
@@ -80,10 +73,20 @@ video {
     border-style: solid;
 }
 
-#name {
+#discord {
+    display: flex;
+    align-items: center;
+    margin-left: 80px;
+    color: white;
+}
+
+#info-container {
     display: flex;
     flex-direction: column;
     margin-left: 10px;
+}
+
+#name {
     font-size: 24px;
     font-family: 'Inter', sans-serif;
     margin-top: 15px;
@@ -92,8 +95,10 @@ video {
 
 #music {
     font-size: 18px;
-    margin-top: 5px;
+    margin-top: 10px;
+    font-family: 'Inter', sans-serif;
 }
+
 
 #bar {
     border-bottom: 1px solid white;
@@ -127,3 +132,33 @@ video {
 .links img {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+
+@media only screen and (max-width: 600px) {
+    #content {
+        width: 450px;
+        height: 350px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: #fff;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+    }
+
+    #bar {
+        border-bottom: 1px solid white;
+        width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        margin-top: 10px;
+    }
+    #discord {
+        display: flex;
+        align-items: center;
+        margin-left: 50px;
+        color: white;
+    }
+
+}
+
