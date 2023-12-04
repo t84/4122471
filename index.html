@@ -18,29 +18,28 @@
     </video>
 
     <div id="content">
-        <div id="discord">
-          <img src="" id="pfp" />
-          <div id="info-container">
-            <div id="name"></div>
-            <div id="music"></div>
-          </div>
-        </div>
-        <div id="bar"></div>
-        <div id="socials" class="links">
-          <a href="https://discord.com/users/442142462857707520"
-            ><img src="imgs/discord.png"
-          /></a>
-          <a href="https://github.com/error287"><img src="imgs/github.png" /></a>
-          <a href="https://t.me/heylololololol"
-            ><img src="imgs/telegram.png"
-          /></a>
-          <a
-            href="https://namemc.com/profile/e250b791-6281-468e-9810-810386ff2fa7"
-            ><img src="imgs/minecraft.png"
-          /></a>
+      <div id="discord">
+        <img src="" id="pfp" />
+        <div id="info-container">
+          <div id="name"></div>
+          <div id="music"></div>
         </div>
       </div>
-      
+      <div id="bar"></div>
+      <div id="socials" class="links">
+        <a href="https://discord.com/users/442142462857707520"
+          ><img src="imgs/discord.png"
+        /></a>
+        <a href="https://github.com/error287"><img src="imgs/github.png" /></a>
+        <a href="https://t.me/heylololololol"
+          ><img src="imgs/telegram.png"
+        /></a>
+        <a
+          href="https://namemc.com/profile/e250b791-6281-468e-9810-810386ff2fa7"
+          ><img src="imgs/minecraft.png"
+        /></a>
+      </div>
+    </div>
 
     <div id="muteButton">&#128266;</div>
     <input
@@ -97,69 +96,53 @@
       var name_div = document.getElementById("name");
       var pfp_div = document.getElementById("pfp");
 
-      socket.addEventListener("open", (event) => {
-        const heartbeatData = {
-          op: 2,
-          d: {
-            subscribe_to_id: "442142462857707520",
-          },
-        };
+      function set_stuff() {
+        fetch("https://api.lanyard.rest/v1/users/442142462857707520")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((receivedData) => {
+            const data = receivedData.data;
+            console.log(data);
 
-        console.log("Synced with Discord RPC")
+            if (data.discord_user) {
+              const userdata = data.discord_user;
+              const username = userdata.username;
+              const avatar_url = `https://cdn.discordapp.com/avatars/442142462857707520/${userdata.avatar}.gif?size=1024`;
 
-        socket.send(JSON.stringify(heartbeatData));
-        start_heartbeat();
-      });
+              const colors = {
+                online: "#3ba55c",
+                offline: "#747f8d",
+                idle: "#faa61a",
+                dnd: "#ed4245",
+              };
 
-      socket.addEventListener("message", (event) => {
-        const receivedData = JSON.parse(event.data);
+              pfp_div.style = `border-color: ${
+                colors[data.discord_status]
+              }; border-style: solid;`;
+              pfp_div.src = avatar_url;
+              name_div.innerText = `@${username}`;
+            }
 
-        if (receivedData.d.discord_user) {
-          const userdata = receivedData.d.discord_user;
-          const username = userdata.username;
-          const avatar_url = `https://cdn.discordapp.com/avatars/442142462857707520/${userdata.avatar}.gif?size=1024`;
+            if (data.listening_to_spotify) {
+              const spotify = data.spotify;
+              const artist = spotify.artist;
+              const song = spotify.song;
 
-          const colors = {
-            'online': "#3ba55c",
-            'offline': "#747f8d",
-            'idle': "#faa61a",
-            'dnd': "#ed4245"
-          }
-
-
-          pfp_div.style = `border-color: ${colors[receivedData.d.discord_status]}; border-style: solid;`;
-          pfp_div.src = avatar_url;
-          name_div.innerText = `@${username}`;
-
-        }
-        if (receivedData.d.listening_to_spotify) {
-          const spotify = receivedData.d.spotify;
-
-          const artist = spotify.artist;
-          const song = spotify.song;
-          const album_art = spotify.album_art_url;
-
-          music_div.textContent = `Listening to ${artist} - ${song}`;
-        } else {
-          music_div.innerHTML = `Listening to nothing...`;
-        }
-      });
-
-      socket.addEventListener("close", (event) => {
-        console.log("WebSocket connection closed.");
-      });
-
-      function start_heartbeat() {
-        setInterval(() => {
-          const heartbeatData = {
-            op: 3,
-            d: {
-              subscribe_to_id: "442142462857707520",
-            },
-          };
-          socket.send(JSON.stringify(heartbeatData));
-        }, 30000);
+              music_div.textContent = `Listening to ${artist} - ${song}`;
+            } else {
+              music_div.innerHTML = `Listening to nothing...`;
+            }
+          })
+          .catch((error) => {
+            console.error("Fetch error:", error);
+          });
       }
+
+      setInterval(set_stuff, 1000);
     </script>
   </body>
 </html>
