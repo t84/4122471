@@ -102,11 +102,11 @@
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
             }
+            console.log("Synced with Discord RPC")
             return response.json();
           })
           .then((receivedData) => {
             const data = receivedData.data;
-            console.log(data);
 
             if (data.discord_user) {
               const userdata = data.discord_user;
