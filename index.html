@@ -91,58 +91,180 @@
         volumeSlider.style.left = video.muted ? "10px" : "60px";
       }
 
-      const socket = new WebSocket("wss://api.lanyard.rest/socket");
-      var music_div = document.getElementById("music");
-      var name_div = document.getElementById("name");
-      var pfp_div = document.getElementById("pfp");
+      //const socket = new WebSocket("wss://api.lanyard.rest/socket");
+      //var music_div = document.getElementById("music");
+      //var name_div = document.getElementById("name");
+      //var pfp_div = document.getElementById("pfp");
+//
+      //function set_stuff() {
+      //  fetch("https://api.lanyard.rest/v1/users/442142462857707520")
+      //    .then((response) => {
+      //      if (!response.ok) {
+      //        throw new Error(`HTTP error! Status: ${response.status}`);
+      //      }
+      //      console.log("Synced with Discord RPC")
+      //      return response.json();
+      //    })
+      //    .then((receivedData) => {
+      //      const data = receivedData.data;
+//
+      //      if (data.discord_user) {
+      //        const userdata = data.discord_user;
+      //        const username = userdata.username;
+      //        const avatar_url = `https://cdn.discordapp.com/avatars/442142462857707520/${userdata.avatar}.gif?size=1024`;
+//
+      //        const colors = {
+      //          online: "#3ba55c",
+      //          offline: "#747f8d",
+      //          idle: "#faa61a",
+      //          dnd: "#ed4245",
+      //        };
+//
+      //        pfp_div.style = `border-color: ${
+      //          colors[data.discord_status]
+      //        }; border-style: solid;`;
+      //        pfp_div.src = avatar_url;
+      //        name_div.innerText = `@${username}`;
+      //      }
+//
+      //      if (data.listening_to_spotify) {
+      //        const spotify = data.spotify;
+      //        const artist = spotify.artist;
+      //        const song = spotify.song;
+//
+      //        music_div.textContent = `Listening to ${artist} - ${song}`;
+      //      } else {
+      //        music_div.innerHTML = `Listening to nothing...`;
+      //      }
+      //    })
+      //    .catch((error) => {
+      //      console.error("Fetch error:", error);
+      //    });
+      //}
+//
+      //setInterval(set_stuff, 1000);
 
-      function set_stuff() {
-        fetch("https://api.lanyard.rest/v1/users/442142462857707520")
-          .then((response) => {
+
+      
+      function updateAvatar() {
+        fetch('https://i.joshua.dog/api/discord/status')
+          .then(response => {
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            console.log("Synced with Discord RPC")
             return response.json();
           })
-          .then((receivedData) => {
-            const data = receivedData.data;
-
-            if (data.discord_user) {
-              const userdata = data.discord_user;
-              const username = userdata.username;
-              const avatar_url = `https://cdn.discordapp.com/avatars/442142462857707520/${userdata.avatar}.gif?size=1024`;
-
+          .then(receivedData => {
+          
+            const data = receivedData.user;
+            const newAvatarHash = data.avatar_hash; 
+            const newAvatarUrl = data.avatar_url;
+          
+            const oldAvatarHash = localStorage.getItem('avatar_hash');
+          
+          
+          
+            const avatarElement = document.getElementById('pfp');
+            const nameDiv = document.getElementById("name");
+          
+          
+            if (avatarElement) {
               const colors = {
-                online: "#3ba55c",
-                offline: "#747f8d",
-                idle: "#faa61a",
+                Online: "#3ba55c",
+                Offline: "#747f8d",
+                Idle: "#faa61a",
                 dnd: "#ed4245",
               };
+            
+            
+              nameDiv.textContent = data.username
+              avatarElement.style.borderColor = colors[receivedData.status] || '#000'; // Default color if status not found
+              avatarElement.style.borderStyle = 'solid';
 
-              pfp_div.style = `border-color: ${
-                colors[data.discord_status]
-              }; border-style: solid;`;
-              pfp_div.src = avatar_url;
-              name_div.innerText = `@${username}`;
-            }
-
-            if (data.listening_to_spotify) {
-              const spotify = data.spotify;
-              const artist = spotify.artist;
-              const song = spotify.song;
-
-              music_div.textContent = `Listening to ${artist} - ${song}`;
-            } else {
-              music_div.innerHTML = `Listening to nothing...`;
+              const timestamp = new Date().getTime();
+              avatarElement.src = `${newAvatarUrl}?t=${timestamp}`;
             }
           })
-          .catch((error) => {
-            console.error("Fetch error:", error);
+          .catch(error => {
+            console.error('Error fetching avatar:', error);
           });
       }
 
-      setInterval(set_stuff, 1000);
+
+      function updateSpotifyStatus() {
+  fetch('https://i.joshua.dog/api/spotify/status')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(receivedData => {
+      // Log the received data
+      console.log('Received Data for Spotify:', receivedData);
+
+      const data = receivedData;
+      const musicDiv = document.getElementById('music');
+
+      const isMobile = window.innerWidth <= 768; // Example breakpoint for mobile devices
+      const maxLength = isMobile ? 30 : 50; // Set max length based on device
+
+      if (data.success) {
+        const artist = data.artist;
+        const song = data.name;
+        
+        // Create the full text
+        const fullText = `Listening to ${artist} - ${song}`;
+
+        // Function to truncate text to maxLength
+        const truncate = (text, length) => text.length > length ? text.substring(0, length) + '...' : text;
+
+        // Truncate the full text
+        const truncatedText = truncate(fullText, maxLength);
+
+        musicDiv.textContent = truncatedText;
+      } else {
+        // Request another API when Spotify data is not available
+        fetch('https://i.joshua.dog/api/another/status')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then(anotherData => {
+            // Update musicDiv based on the data from the second API
+            console.log('Received Data from Another API:', anotherData);
+
+            // Example: handle the data from the second API
+            if (anotherData.success) {
+              musicDiv.textContent = `New Status: ${anotherData.someStatus}`;
+            } else {
+              musicDiv.textContent = `Listening to nothing...`;
+            }
+          })
+          .catch(error => {
+            console.error('Fetch error from second API:', error);
+            musicDiv.textContent = `Listening to nothing...`;
+          });
+      }
+    })
+    .catch(error => {
+      console.error('Fetch error:', error);
+    });
+}
+
+
+
+
+    // Ensure the functions run when the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      updateAvatar(); // Set avatar on page load
+      updateSpotifyStatus(); // Set initial Spotify status
+    });
+
+    // Poll every 5 seconds to check for Spotify updates
+    setInterval(updateSpotifyStatus, 1000);
     </script>
   </body>
 </html>
