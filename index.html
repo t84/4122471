@@ -125,7 +125,7 @@
             
             
               nameDiv.textContent = '@' + data.username
-              avatarElement.style.borderColor = colors[receivedData.status] || '#000'; // Default color if status not found
+              avatarElement.style.borderColor = colors[receivedData.status] || '#000'; 
               avatarElement.style.borderStyle = 'solid';
 
               const timestamp = new Date().getTime();
@@ -144,28 +144,24 @@
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      return response.json(); // Parse the JSON content from the response
+      return response.json(); 
     })
     .then(data => {
-      // Log the received data
       console.log('Received Data from API:', data);
 
       const musicDiv = document.getElementById('music');
-      const isMobile = window.innerWidth <= 600; // Example breakpoint for mobile devices
-      const maxLength = isMobile ? 30 : 100; // Set max length based on device
+      const isMobile = window.innerWidth <= 600; 
+      const maxLength = isMobile ? 30 : 100; 
 
       if (data.crunchyroll && data.crunchyroll.watching) {
         const episodeDetail = data.crunchyroll.episode_detail;
         const episodeName = data.crunchyroll.episode_name;
         const showName = data.crunchyroll.name;
 
-        // Create the full text
         const fullText = `Watching ${showName}: ${episodeDetail} - ${episodeName}`;
 
-        // Function to truncate text to maxLength
         const truncate = (text, length) => text.length > length ? text.substring(0, length) + '...' : text;
 
-        // Truncate the full text
         const truncatedText = truncate(fullText, maxLength);
 
         musicDiv.textContent = truncatedText;
@@ -190,26 +186,22 @@
       return response.json();
     })
     .then(receivedData => {
-      // Log the received data
       console.log('Received Data for Spotify:', receivedData);
 
       const data = receivedData;
       const musicDiv = document.getElementById('music');
 
-      const isMobile = window.innerWidth <= 768; // Example breakpoint for mobile devices
-      const maxLength = isMobile ? 30 : 50; // Set max length based on device
+      const isMobile = window.innerWidth <= 768; 
+      const maxLength = isMobile ? 30 : 50; 
 
       if (data.success) {
         const artist = data.artist;
         const song = data.name;
         
-        // Create the full text
         const fullText = `Listening to ${artist} - ${song}`;
 
-        // Function to truncate text to maxLength
         const truncate = (text, length) => text.length > length ? text.substring(0, length) + '...' : text;
 
-        // Truncate the full text
         const truncatedText = truncate(fullText, maxLength);
 
         musicDiv.textContent = truncatedText;
@@ -225,13 +217,11 @@
 
 
 
-    // Ensure the functions run when the DOM is fully loaded
     document.addEventListener('DOMContentLoaded', () => {
-      updateAvatar(); // Set avatar on page load
-      updateSpotifyStatus(); // Set initial Spotify status
+      updateAvatar();
+      updateSpotifyStatus(); 
     });
 
-    // Poll every 5 seconds to check for Spotify updates
     setInterval(updateSpotifyStatus, 1000);
     </script>
   </body>
